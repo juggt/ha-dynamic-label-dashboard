@@ -6,6 +6,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
 from .const import DOMAIN
+from .dashboard_writer import async_ensure_dashboard_file
 from .http import async_register_static
 from .panel import async_register_panel
 from .ws_api import async_register as async_register_ws
@@ -31,9 +32,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         "options": options,
     }
     await async_register_static(hass)
+    await async_ensure_dashboard_file(hass)
     async_register_panel(hass)
     async_register_ws(hass)
-    _LOGGER.warning("dynamic_label_dashboard: setup_entry %s, panel/websocket/static registered", entry.entry_id)
+    _LOGGER.warning("dynamic_label_dashboard: setup_entry %s, dashboard/panel/websocket/static registered", entry.entry_id)
     return True
 
 
