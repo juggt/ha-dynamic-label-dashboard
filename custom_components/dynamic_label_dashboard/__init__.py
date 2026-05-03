@@ -25,9 +25,14 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data.setdefault(DOMAIN, {})
+    options = dict(entry.options)
+    if "summary_labels" not in options:
+        options["summary_labels"] = []
+    if "detail_labels" not in options:
+        options["detail_labels"] = []
     hass.data[DOMAIN][entry.entry_id] = {
         "config": dict(entry.data),
-        "options": dict(entry.options),
+        "options": options,
     }
     _LOGGER.warning("dynamic_label_dashboard: setup_entry %s", entry.entry_id)
     return True
