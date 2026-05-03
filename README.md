@@ -22,6 +22,13 @@ Core ideas:
 - Per-room overrides
 - Dynamic rendering, automatic updates
 
+## Current status
+
+- Basic custom component bootstrap works
+- Deploy script to Home Assistant VM works
+- Debug panel exists
+- Home Assistant options dialog is temporarily disabled to avoid a persistent 500 error during early bootstrap
+
 ## Planned structure
 
 - `docs/` architecture and product docs
