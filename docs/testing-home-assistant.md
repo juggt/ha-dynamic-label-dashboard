@@ -2,16 +2,29 @@
 
 ## Recommended quick setup
 
-Use a real Home Assistant config directory and mount or symlink this component into:
+Use the real Home Assistant VM config directory and sync this component into:
 
-`<HA_CONFIG>/custom_components/dynamic_label_dashboard/`
+`/config/custom_components/dynamic_label_dashboard/`
+
+Current target:
+- host: `k0nsti@192.168.178.173`
+- path: `/config/custom_components/dynamic_label_dashboard`
 
 ## Practical loop
 
+### Deploy
+Use:
+
+```bash
+./scripts/deploy-to-ha.sh
+```
+
 ### Python/backend changes
+- deploy
 - restart Home Assistant, or reload the integration if possible
 
 ### Frontend changes
+- deploy
 - rebuild frontend assets if applicable
 - hard refresh browser
 
