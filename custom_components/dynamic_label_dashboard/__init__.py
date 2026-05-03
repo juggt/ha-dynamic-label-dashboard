@@ -16,10 +16,6 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     hass.data.setdefault(DOMAIN, {})
     _LOGGER.warning("dynamic_label_dashboard: async_setup called")
-    await async_register_static(hass)
-    async_register_ws(hass)
-    await async_register_panel(hass)
-    _LOGGER.warning("dynamic_label_dashboard: panel and websocket registered")
     return True
 
 
@@ -34,7 +30,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         "config": dict(entry.data),
         "options": options,
     }
-    _LOGGER.warning("dynamic_label_dashboard: setup_entry %s", entry.entry_id)
+    await async_register_static(hass)
+    async_register_panel(hass)
+    async_register_ws(hass)
+    _LOGGER.warning("dynamic_label_dashboard: setup_entry %s, panel/websocket/static registered", entry.entry_id)
     return True
 
 
