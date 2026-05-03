@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 import voluptuous as vol
@@ -7,6 +8,8 @@ from homeassistant import config_entries
 from homeassistant.data_entry_flow import FlowResult
 
 from .const import DEFAULT_TITLE, DOMAIN
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class DynamicLabelDashboardConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -31,29 +34,15 @@ class DynamicLabelDashboardOptionsFlow(config_entries.OptionsFlow):
         self.config_entry = config_entry
 
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+        _LOGGER.warning("dynamic_label_dashboard: options flow opened")
+
         if user_input is not None:
-            summary_raw = user_input.get("summary_labels", "")
-            detail_raw = user_input.get("detail_labels", "")
-            summary_labels = [item.strip() for item in summary_raw.split(",") if item.strip()]
-            detail_labels = [item.strip() for item in detail_raw.split(",") if item.strip()]
-            return self.async_create_entry(
-                title="",
-                data={
-                    "summary_labels": summary_labels,
-                    "detail_labels": detail_labels,
-                },
-            )
+            _LOGGER.warning("dynamic_label_dashboard: options flow submitted")
+            return self.async_create_entry(title="", data={})
 
-        summary_existing = self.config_entry.options.get("summary_labels", [])
-        detail_existing = self.config_entry.options.get("detail_labels", [])
-
-        if not isinstance(summary_existing, list):
-            summary_existing = []
-        if not isinstance(detail_existing, list):
-            detail_existing = []
-
-        schema = vol.Schema({
-            vol.Optional("summary_labels", default=", ".join(str(x) for x in summary_existing)) : str,
-            vol.Optional("detail_labels", default=", ".join(str(x) for x in detail_existing)) : str,
-        })
-        return self.async_show_form(step_id="init", data_schema=schema)
+        try:
+            schema = vol.Schema({})
+            return self.async_show_form(step_id="init", data_schema=schema)
+        except Exception:
+            _LOGGER.exception("dynamic_label_dashboard: options flow crashed")
+            raise
