@@ -32,10 +32,28 @@ class DynamicLabelDashboardOptionsFlow(config_entries.OptionsFlow):
 
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         if user_input is not None:
-            return self.async_create_entry(title="", data=user_input)
+            summary_raw = user_input.get("summary_labels", "")
+            detail_raw = user_input.get("detail_labels", "")
+            summary_labels = [item.strip() for item in summary_raw.split(",") if item.strip()]
+            detail_labels = [item.strip() for item in detail_raw.split(",") if item.strip()]
+            return self.async_create_entry(
+                title="",
+                data={
+                    "summary_labels": summary_labels,
+                    "detail_labels": detail_labels,
+                },
+            )
+
+        summary_existing = self.config_entry.options.get("summary_labels", [])
+        detail_existing = self.config_entry.options.get("detail_labels", [])
+
+        if not isinstance(summary_existing, list):
+            summary_existing = []
+        if not isinstance(detail_existing, list):
+            detail_existing = []
 
         schema = vol.Schema({
-            vol.Optional("summary_labels", default=", ".join(self.config_entry.options.get("summary_labels", []))): str,
-            vol.Optional("detail_labels", default=", ".join(self.config_entry.options.get("detail_labels", []))): str,
+            vol.Optional("summary_labels", default=", ".join(str(x) for x in summary_existing)) : str,
+            vol.Optional("detail_labels", default=", ".join(str(x) for x in detail_existing)) : str,
         })
         return self.async_show_form(step_id="init", data_schema=schema)
